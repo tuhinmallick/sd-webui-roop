@@ -18,17 +18,20 @@ from scripts.faceswap import get_models
 from scripts.swapper import UpscaleOptions, swap_face, ImageResult
 
 def get_face_restorer(str):
-    for restorer in shared.face_restorers:
-        if restorer.name() == str:
-            return restorer
-    return None
+    return next(
+        (
+            restorer
+            for restorer in shared.face_restorers
+            if restorer.name() == str
+        ),
+        None,
+    )
 
 def get_full_model(model_name):
     models = get_models()
-    for model in models:
-        if model.split("/")[-1] == model_name:
-            return model
-    return None
+    return next(
+        (model for model in models if model.split("/")[-1] == model_name), None
+    )
 
 def roop_api(_: gr.Blocks, app: FastAPI):
     @app.post("/roop/image")
